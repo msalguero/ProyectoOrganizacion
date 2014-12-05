@@ -38,6 +38,8 @@ private slots:
 
     void on_btnGuardarTabla_clicked();
 
+    void on_btnBuscarCampos_clicked();
+
 private:
     Ui::VisualizacionModo *ui;
 };

@@ -2,6 +2,9 @@
 #include "ui_visualizacionmodo.h"
 #include "edicionmodo.h"
 #include "creartabla.h"
+#include <QInputDialog>
+#include <QLineEdit>
+#include <QDir>
 
 VisualizacionModo::VisualizacionModo(QString file, QWidget *parent) :
     QDialog(parent),
@@ -204,4 +207,48 @@ void VisualizacionModo::on_btnGuardarTabla_clicked()
 
     gestor->guardarRegistrosTabla(tablaActual->metaData->idTabla);
     gestor->guardarMetaDataTablas();
+}
+
+void VisualizacionModo::on_btnBuscarCampos_clicked()
+{
+    QString text = QInputDialog::getText(this, tr("Busqueda"),
+                                             tr("Ingrese Id a buscar:"), QLineEdit::Normal);
+    if(tablaActual == NULL || text.isEmpty())
+        return;
+
+    ui->tblwTablaActual->clearContents();
+    ui->tblwTablaActual->clear();
+    ui->tblwTablaActual->setRowCount(1);
+
+    int cantCampos = tablaActual->metaData->cantitdadCampos();
+    ui->tblwTablaActual->setColumnCount(cantCampos);
+
+    QStringList lista;
+    for(int i = 0; i<cantCampos; i++)
+    {
+        lista.append(QString::fromLocal8Bit(tablaActual->metaData->metaDataFields->Recupera(i)->nombreCampo));
+    }
+
+    ui->tblwTablaActual->setHorizontalHeaderLabels(lista);
+
+    Register* registro = tablaActual->registros->Recupera(0);
+    if(registro == NULL)return;
+
+    for(int j = 0; j<cantCampos; j++)
+    {
+        char* valor = registro->campos->Recupera(j)->valor;
+        QString valorCampo="";
+
+        if(tablaActual->metaData->metaDataFields->Recupera(j)->tipoDato == 1)
+        {
+            int v;
+            memcpy(&v, valor, 4);
+            valorCampo = QString::number(v);
+        }else
+        {
+            valorCampo = QString::fromLocal8Bit(valor);
+        }
+        qDebug()<<valorCampo;
+        ui->tblwTablaActual->setItem(0,j,new QTableWidgetItem(valorCampo));
+    }
 }
