@@ -46,6 +46,7 @@ void CrearTabla::on_btnOkNuevoNombreTabla_clicked()
     char *nombreTabla = (char*)malloc(20);
     memcpy(nombreTabla, bytesTabla, strlen(bytesTabla));
     tablaNueva = gestor->crearNuevaTabla(nombreTabla);
+    tablaNueva->agregarCampo(1, "Id", 4);
 }
 
 void CrearTabla::on_btnOkNuevoTipoDatoCampo_clicked()
