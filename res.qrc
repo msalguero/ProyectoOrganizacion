@@ -1,0 +1,23 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>Iconos/database38.png</file>
+        <file>Iconos/done (1).png</file>
+        <file>Iconos/done.png</file>
+        <file>Iconos/file98.png</file>
+        <file>Iconos/folder232.png</file>
+        <file>Iconos/gallery2 (1).png</file>
+        <file>Iconos/gallery2.png</file>
+        <file>Iconos/list50.png</file>
+        <file>Iconos/list88.png</file>
+        <file>Iconos/listing.png</file>
+        <file>Iconos/little14.png</file>
+        <file>Iconos/new10 (1).png</file>
+        <file>Iconos/new10.png</file>
+        <file>Iconos/pencil63.png</file>
+        <file>Iconos/view12.png</file>
+        <file>Iconos/visible9 (1).png</file>
+        <file>Iconos/visible9.png</file>
+        <file>Iconos/zoom19 (1).png</file>
+        <file>Iconos/zoom19.png</file>
+    </qresource>
+</RCC>
