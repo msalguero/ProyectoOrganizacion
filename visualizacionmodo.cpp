@@ -173,14 +173,18 @@ void VisualizacionModo::on_btnGuardarTabla_clicked()
         return ;
 
     int filaRegNuevos = tablaActual->registros->size;
+    HashTable tablaHash(NULL, NULL);
 
     for(int j = filaRegNuevos; j<ui->tblwTablaActual->rowCount(); j++)
     {
         Register* registroNuevo = new Register(tablaActual->metaData);
+        char* id = (char*)malloc(20);
+        int direccion = 0;
         for(int i = 0; i<tablaActual->metaData->cantitdadCampos(); i++)
         {
             MetaDataField* metaCampo = tablaActual->metaData->metaDataFields->Recupera(i);
             QString valor = ui->tblwTablaActual->item(j,i)->text();
+            direccion = tablaActual->metaData->blqDataI*1024 + j*tablaActual->metaData->getSizeRegistro();
             qDebug()<<valor;
             if(metaCampo->tipoDato == 2)
              {
@@ -202,7 +206,9 @@ void VisualizacionModo::on_btnGuardarTabla_clicked()
             }
 
         }
+        id = registroNuevo->campos->Recupera(0)->valor;
         tablaActual->agregarRegistro(registroNuevo);
+        tablaHash.Agregar(id, direccion);
     }
 
     gestor->guardarRegistrosTabla(tablaActual->metaData->idTabla);
@@ -215,23 +221,28 @@ void VisualizacionModo::on_btnBuscarCampos_clicked()
                                              tr("Ingrese Id a buscar:"), QLineEdit::Normal);
     if(tablaActual == NULL || text.isEmpty())
         return;
+    //Convertir Qstring a char*
+    QByteArray ba = text.toLocal8Bit();
+    char *bytesCampo = ba.data();
 
+    //Limpia la tabla
     ui->tblwTablaActual->clearContents();
     ui->tblwTablaActual->clear();
     ui->tblwTablaActual->setRowCount(1);
 
     int cantCampos = tablaActual->metaData->cantitdadCampos();
     ui->tblwTablaActual->setColumnCount(cantCampos);
-
+    //Agrega los headers al grid
     QStringList lista;
     for(int i = 0; i<cantCampos; i++)
     {
         lista.append(QString::fromLocal8Bit(tablaActual->metaData->metaDataFields->Recupera(i)->nombreCampo));
     }
-
     ui->tblwTablaActual->setHorizontalHeaderLabels(lista);
 
-    Register* registro = tablaActual->registros->Recupera(0);
+    //Busca y retorna el registro
+    HashTable tablaHash(gestor->archivo, tablaActual->metaData);
+    Register* registro = tablaHash.Buscar(bytesCampo);
     if(registro == NULL)return;
 
     for(int j = 0; j<cantCampos; j++)

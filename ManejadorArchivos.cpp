@@ -20,6 +20,25 @@ void ManejadorArchivos::abrirArchivo(const char *archivo)
     Archivo = pFile;
 }
 
+void ManejadorArchivos::escribirElementoIndice(int pos, char *elemento)
+{
+    int posElemento = pos*8;
+    fseek(Archivo, posElemento, 0);
+    fwrite(elemento, sizeof(char), 8, Archivo);
+}
+
+char* ManejadorArchivos::leerElementoIndice(int pos)
+{
+    int posElemento = pos*8;
+    fseek(Archivo, posElemento, 0);
+
+    char* elemento = (char*)malloc(8);
+
+    fread(elemento, 1, 8, Archivo);
+
+    return elemento;
+}
+
 void ManejadorArchivos::abrirArchivoLectura(char* archivo)
 {
     FILE * pFile;
@@ -70,6 +89,16 @@ int ManejadorArchivos::leerEncabezado(int numBloque)
     memcpy(&encabezado, bloque, 4);
 
     return encabezado;
+}
+
+char* ManejadorArchivos::leerRegistro(int direccion, int tam)
+{
+    fseek(Archivo, direccion, 0);
+    char* registro = (char*)malloc(tam);
+
+    fread(registro, 1, tam, Archivo);
+
+    return registro;
 }
 
 void ManejadorArchivos::leerArchivo(char* data, char* archivo)

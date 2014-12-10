@@ -5,6 +5,7 @@
 #include <QTreeWidgetItem>
 #include <QDebug>
 #include "DataBaseManager.h"
+#include "hashtable.h"
 
 namespace Ui {
 class VisualizacionModo;

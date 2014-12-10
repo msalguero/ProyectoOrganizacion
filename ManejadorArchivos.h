@@ -18,6 +18,9 @@ class ManejadorArchivos
         void abrirArchivoLectura(char* archivo);
         void cerrarArchivo();
         char *leerBloque(int numBloque);
+        void escribirElementoIndice(int pos, char* elemento);
+        char* leerRegistro(int direccion, int tam);
+        char* leerElementoIndice(int pos);
         void escribirBloque(int numBloque, char* bloque);
         int leerEncabezado(int numBloque);
         void leerArchivo(char * data, char* archivo);

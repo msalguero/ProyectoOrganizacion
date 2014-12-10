@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     MetaDataField.cpp \
     MetaDataReg.cpp \
     Register.cpp \
-    Table.cpp
+    Table.cpp \
+    hashtable.cpp
 
 HEADERS  += mainwindow.h \
     visualizacionmodo.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     MetaDataReg.h \
     Nodo.h \
     Register.h \
-    Table.h
+    Table.h \
+    hashtable.h
 
 FORMS    += mainwindow.ui \
     visualizacionmodo.ui \

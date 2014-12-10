@@ -2,11 +2,18 @@
 #include "ui_mainwindow.h"
 #include "visualizacionmodo.h"
 #include "menu.h"
+#include "hashtable.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //HashTable tabla(NULL, NULL);
+
+    //tabla.Agregar("21311116", 87);
+    //tabla.Buscar("21311116");
 }
 
 MainWindow::~MainWindow()
