@@ -5,6 +5,7 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QDir>
+#include <QMessageBox>
 
 VisualizacionModo::VisualizacionModo(QString file, QWidget *parent) :
     QDialog(parent),
@@ -69,13 +70,13 @@ void VisualizacionModo::init()
         Table* t = gestor->tablas->Recupera(i);
         QTreeWidgetItem *nombreTabla = new QTreeWidgetItem();
         nombreTabla->setText(0, QString::fromLocal8Bit(t->metaData->nombre));
-        //nombreTabla->setIcon(0, QIcon(":/Imagenes/Imgs/1401563677_status-away.png"));
+        nombreTabla->setIcon(0, QIcon(":/img/Iconos/tableMini.gif"));
         ui->twiVizualizacinTabla->addTopLevelItem(nombreTabla);
         for(int j = 0; j<t->metaData->cantitdadCampos(); j++)
         {
             QTreeWidgetItem *nombreCampo = new QTreeWidgetItem();
             nombreCampo->setText(0, QString::fromLocal8Bit(t->metaData->metaDataFields->Recupera(j)->nombreCampo));
-            //nombreCampo->setIcon(0, QIcon(":/Imagenes/Imgs/1401563677_status-away.png"));
+            //nombreCampo->setIcon(0, QIcon(":/Img/Iconos/1401563677_status-away.png"));
             nombreTabla->addChild(nombreCampo);
         }
     }
@@ -83,7 +84,6 @@ void VisualizacionModo::init()
 
 void VisualizacionModo::mostrarTabla(Table *tabla)
 {
-    qDebug()<<"Se mando a llamar tabla";
     ui->tblwTablaActual->clearContents();
     ui->tblwTablaActual->clear();
     ui->tblwTablaActual->setRowCount(0);
@@ -91,7 +91,6 @@ void VisualizacionModo::mostrarTabla(Table *tabla)
     int cantCampos = tabla->metaData->cantitdadCampos();
     int cantRegistros = tabla->registros->size;
     ui->tabWidget->setTabText(0, QString::fromLocal8Bit(tabla->metaData->nombre));
-    qDebug()<<"ID"<<tabla->metaData->idTabla<<"BloqueDatos"<<tabla->metaData->blqDataI;
     if(cantRegistros == 0)
     {
         gestor->leerRegistrosTabla(tabla->metaData->idTabla);
@@ -101,7 +100,7 @@ void VisualizacionModo::mostrarTabla(Table *tabla)
     ui->tblwTablaActual->setColumnCount(cantCampos);
     ui->tblwTablaActual->setRowCount(cantRegistros);
 
-    qDebug()<<"Se corrio 1 vez la loop"<<cantRegistros;
+    //qDebug()<<"Se corrio 1 vez la loop"<<cantRegistros;
 
     QStringList lista;
     for(int i = 0; i<cantCampos; i++)
@@ -127,7 +126,7 @@ void VisualizacionModo::mostrarTabla(Table *tabla)
                 valorCampo = QString::number(v);
             }else
             {
-                valorCampo = QString::fromLocal8Bit(valor);
+                valorCampo = valor;
             }
             qDebug()<<valorCampo;
             ui->tblwTablaActual->setItem(i,j,new QTableWidgetItem(valorCampo));
@@ -147,7 +146,7 @@ void VisualizacionModo::click_treeWidget(QTreeWidgetItem *item, int column)
     QByteArray ba = item->text(column).toLocal8Bit();
     const char *c = ba.data();
     Table* tabla = gestor->buscarTabla(c);
-    qDebug()<<"Registros al inicio de funcion"<<tabla->registros->size;
+   // qDebug()<<"Registros al inicio de funcion"<<tabla->registros->size;
 
     if(tabla == NULL)
         return ;
@@ -185,7 +184,7 @@ void VisualizacionModo::on_btnGuardarTabla_clicked()
             MetaDataField* metaCampo = tablaActual->metaData->metaDataFields->Recupera(i);
             QString valor = ui->tblwTablaActual->item(j,i)->text();
             direccion = tablaActual->metaData->blqDataI*1024 + j*tablaActual->metaData->getSizeRegistro();
-            qDebug()<<valor;
+            //qDebug()<<valor;
             if(metaCampo->tipoDato == 2)
              {
                 char* valorCadena = (char*)malloc(20);
@@ -207,8 +206,12 @@ void VisualizacionModo::on_btnGuardarTabla_clicked()
 
         }
         id = registroNuevo->campos->Recupera(0)->valor;
+        int idEntero = 0;
+        memcpy(&idEntero, id, 4);
+        //qDebug()<<"Valor de id: "<<idEntero;
         tablaActual->agregarRegistro(registroNuevo);
-        tablaHash.Agregar(id, direccion);
+        char buffer[20];
+        tablaHash.Agregar(itoa(idEntero, buffer, 10), direccion);
     }
 
     gestor->guardarRegistrosTabla(tablaActual->metaData->idTabla);
@@ -243,8 +246,13 @@ void VisualizacionModo::on_btnBuscarCampos_clicked()
     //Busca y retorna el registro
     HashTable tablaHash(gestor->archivo, tablaActual->metaData);
     Register* registro = tablaHash.Buscar(bytesCampo);
-    if(registro == NULL)return;
-
+    if(registro == NULL)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("El id no existe");
+        msgBox.exec();
+        return;
+    }
     for(int j = 0; j<cantCampos; j++)
     {
         char* valor = registro->campos->Recupera(j)->valor;

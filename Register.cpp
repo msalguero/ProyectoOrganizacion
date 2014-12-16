@@ -19,7 +19,7 @@ void Register::fromBytes(char* bytes)
     {
         MetaDataField* campo = metaDatareg->metaDataFields->Recupera(i);
         int tamCampo = campo->tamanioCampo;
-        char *valor = new char[tamCampo];
+        char *valor = (char*)malloc(tamCampo);
         memcpy(valor, &(bytes[pos]), tamCampo);
         pos += tamCampo;
         campos->Agregar(new Field(campo, valor));

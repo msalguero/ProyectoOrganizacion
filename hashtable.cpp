@@ -12,7 +12,7 @@ HashTable::HashTable(ManejadorArchivos *archivo, MetaDataReg *metaData)
 {
     bloqueTablaHash = archivo;
     this->metaData = metaData;
-    tam=100;
+    tam=5*archivo->TAM_BLOQUE;
 }
 
 int HashTable::hash(char *llave)
@@ -56,8 +56,8 @@ Register* HashTable::Buscar(char *llave)
     ElementoIndice structElemento;
     char* bytesElemento = archivoTemporal->leerElementoIndice(pos);
     memcpy(&structElemento, bytesElemento, 8);
-    //char buffer [33];
-    //itoa(structElemento.llave, buffer, 10);
+    if( atoi(llave) != structElemento.llave)
+        return NULL;
     archivoTemporal->cerrarArchivo();
 
     char* bytes = bloqueTablaHash->leerRegistro(structElemento.direccionRegistro, metaData->getSizeRegistro());
